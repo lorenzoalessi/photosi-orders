@@ -11,14 +11,14 @@ public class OrderRepository : GenericRepository<Model.Order>, IOrderRepository
 
     public async Task<List<Model.Order>> GetAllAndIncludeAsync()
     {
-        return await _context.Orders
+        return await Context.Orders
             .Include(x => x.OrderProducts)
             .ToListAsync();
     }
 
     public async Task<Model.Order?> GetByIdAndIncludeAsync(int id)
     {
-        return await _context.Orders
+        return await Context.Orders
             .Include(x => x.OrderProducts)
             .SingleOrDefaultAsync(x => x.Id == id);
     }

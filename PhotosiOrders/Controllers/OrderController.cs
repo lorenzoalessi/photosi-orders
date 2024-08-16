@@ -57,15 +57,8 @@ public class OrderController : ControllerBase
         var errorMessage = ValidateOrderDto(orderDto);
         if (!string.IsNullOrEmpty(errorMessage))
             return BadRequest(errorMessage);
-
-        try
-        {
-            return Ok(await _orderService.AddAsync(orderDto));
-        }
-        catch (OrderException e)
-        {
-            return BadRequest($"Errore nella richiesta di inserimento: {e.Message}");
-        }
+        
+        return Ok(await _orderService.AddAsync(orderDto));
     }
 
     [HttpDelete("{id}")]
@@ -74,18 +67,11 @@ public class OrderController : ControllerBase
         if (id < 1)
             return BadRequest("ID fornito non valido");
 
-        try
-        {
-            var deleted = await _orderService.DeleteAsync(id);
-            if (!deleted)
-                return StatusCode(500, "Errore nella richiesta di eliminazione");
+        var deleted = await _orderService.DeleteAsync(id);
+        if (!deleted)
+            return StatusCode(500, "Errore nella richiesta di eliminazione");
             
-            return Ok($"Ordine con ID {id} eliminato con successo");
-        }
-        catch (OrderException e)
-        {
-            return BadRequest($"Errore nella richiesta di eliminazione: {e.Message}");
-        }
+        return Ok($"Ordine con ID {id} eliminato con successo");
     }
 
     private string ValidateOrderDto(OrderDto orderDto)
