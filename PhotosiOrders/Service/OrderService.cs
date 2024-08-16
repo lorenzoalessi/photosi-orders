@@ -39,7 +39,9 @@ public class OrderService : IOrderService
         // in quanto l'ordine di un determinato utente non può essere "trasferito" ad un'altro
         // order.UserId = orderDto.UserId;
         
-        order.OrderCode = orderDto.OrderCode;
+        // Stesso discorso per il codice dell'ordine
+        // order.OrderCode = orderDto.OrderCode;
+        
         order.AddressId = orderDto.AddressId;
         order.OrderProducts = orderDto.OrderProducts.Select(product => new OrderProduct()
         {
