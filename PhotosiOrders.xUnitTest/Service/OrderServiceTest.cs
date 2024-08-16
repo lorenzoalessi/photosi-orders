@@ -25,7 +25,7 @@ public class OrderServiceTest : TestSetup
     }
 
     [Fact]
-    public async Task GetAsync_ShouldReturnList_Always()
+    public async Task GetAllAndIncludeAsync_ShouldReturnList_Always()
     {
         // Arrange
         var service = GetService();
@@ -35,7 +35,7 @@ public class OrderServiceTest : TestSetup
             .ToList();
         
         // Setup mock del repository
-        _mockOrderRepository.Setup(x => x.GetAsync())
+        _mockOrderRepository.Setup(x => x.GetAllAndIncludeAsync())
             .ReturnsAsync(orders);
         
         // Act
@@ -50,6 +50,8 @@ public class OrderServiceTest : TestSetup
             Assert.Empty(result.Select(x => x.UserId).Except(orders.Select(x => x.UserId)));
             Assert.Empty(result.Select(x => x.AddressId).Except(orders.Select(x => x.AddressId)));
             
+            Assert.Equal(result.Sum(x => x.OrderProducts.Count), result.Sum(x => x.OrderProducts.Count));
+            
             // Campi univoci
             Assert.Equal(result.Select(x => x.Id).Distinct().Count(), result.Count);
             Assert.Equal(result.Select(x => x.OrderCode).Distinct().Count(), result.Count);
@@ -59,7 +61,7 @@ public class OrderServiceTest : TestSetup
             Assert.All(result, x => Assert.True(x.AddressId > 0));
         });
         
-        _mockOrderRepository.Verify(x => x.GetAsync(), Times.Once);
+        _mockOrderRepository.Verify(x => x.GetAllAndIncludeAsync(), Times.Once);
     }
     
     private IOrderService GetService() => new OrderService(_mockOrderRepository.Object, _mapper);
@@ -72,7 +74,18 @@ public class OrderServiceTest : TestSetup
             OrderCode = _faker.Int(1),
             UserId = _faker.Int(1),
             AddressId = _faker.Int(1),
-            OrderProducts = new List<OrderProduct>() // Lista vuota, la GetAsync non fa la include
+            OrderProducts = Enumerable.Range(0, _faker.Int(10, 30))
+                .Select(_ => GenerateOrderProducts())
+                .ToList()
+        };
+    }
+
+    private OrderProduct GenerateOrderProducts()
+    {
+        return new OrderProduct()
+        {
+            ProductId = _faker.Int(1),
+            Quantity = _faker.Int(1)
         };
     }
 }
