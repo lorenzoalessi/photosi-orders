@@ -1,7 +1,9 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 
 namespace PhotosiOrders.Model;
 
+[ExcludeFromCodeCoverage]
 public class Context : DbContext
 {
     public virtual DbSet<OrderProduct> OrderProducts { get; set; }

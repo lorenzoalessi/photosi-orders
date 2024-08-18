@@ -38,6 +38,35 @@ public class OrderRepositoryTest : TestSetup
             Assert.All(result, x => Assert.True(x.AddressId > 0));
         });
     }
+
+    [Fact]
+    public async Task GetByIdAndIncludeAsync_ShouldReturnNull_IfObjectNotFound()
+    {
+        // Arrange
+        var repository = GetRepository();
+        
+        // Act
+        var result = await repository.GetByIdAndIncludeAsync(_faker.Int());
+        
+        // Assert
+        Assert.Null(result);
+    }
+    
+    [Fact]
+    public async Task GetByIdAndIncludeAsync_ShouldReturnObject_IfObjectFound()
+    {
+        // Arrange
+        var repository = GetRepository();
+        var order = GenerateOrderAndSave();
+        
+        // Act
+        var result = await repository.GetByIdAndIncludeAsync(order.Id);
+        
+        // Assert
+        Assert.NotNull(result);
+        Assert.Equal(result.Id, order.Id);
+        Assert.Equal(result.OrderProducts.Count, order.OrderProducts.Count);
+    }
     
     private IOrderRepository GetRepository() => new OrderRepository(_context);
     

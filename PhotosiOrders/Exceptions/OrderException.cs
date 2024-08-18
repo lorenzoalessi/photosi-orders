@@ -1,5 +1,8 @@
-﻿namespace PhotosiOrders.Exceptions;
+﻿using System.Diagnostics.CodeAnalysis;
 
+namespace PhotosiOrders.Exceptions;
+
+[ExcludeFromCodeCoverage]
 public class OrderException : Exception
 {
     public OrderException()

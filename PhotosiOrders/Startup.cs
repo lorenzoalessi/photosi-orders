@@ -1,10 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.EntityFrameworkCore;
 using PhotosiOrders.Model;
 using PhotosiOrders.Repository.Order;
 using PhotosiOrders.Service;
 
 namespace PhotosiOrders;
 
+[ExcludeFromCodeCoverage]
 public class Startup
 {
     private readonly WebApplicationBuilder _builder;

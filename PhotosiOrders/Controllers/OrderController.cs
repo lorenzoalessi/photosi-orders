@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using System.Diagnostics.CodeAnalysis;
+using Microsoft.AspNetCore.Mvc;
 using PhotosiOrders.Dto;
 using PhotosiOrders.Exceptions;
 using PhotosiOrders.Service;
 
 namespace PhotosiOrders.Controllers;
 
+// Escluso perche si puo testare tramite integration test e non unit test
+[ExcludeFromCodeCoverage]
 [Route("api/v1/orders")]
 [ApiController]
 public class OrderController : ControllerBase

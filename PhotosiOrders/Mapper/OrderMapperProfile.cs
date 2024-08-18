@@ -1,9 +1,11 @@
-﻿using AutoMapper;
+﻿using System.Diagnostics.CodeAnalysis;
+using AutoMapper;
 using PhotosiOrders.Dto;
 using PhotosiOrders.Model;
 
 namespace PhotosiOrders.Mapper;
 
+[ExcludeFromCodeCoverage]
 public class OrderMapperProfile : Profile
 {
     public OrderMapperProfile()
