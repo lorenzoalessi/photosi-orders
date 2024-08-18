@@ -108,6 +108,35 @@ public class OrderServiceTest : TestSetup
     }
 
     [Fact]
+    public async Task GetAllForUserAsync_ShouldReturnList_Always()
+    {
+        // Arrange
+        var service = GetService();
+
+        var userId = _faker.Int(1);
+        var orders = Enumerable.Range(0, _faker.Int(10, 30))
+            .Select(_ => GenerateOrder(userId: userId))
+            .ToList();
+        
+        // Setup mock del repository
+        _mockOrderRepository.Setup(x => x.GetAllAndIncludeByUserIdAsync(userId))
+            .ReturnsAsync(orders);
+        
+        // Act
+        var result = await service.GetAllForUserAsync(userId);
+        
+        Assert.Multiple(() =>
+        {
+            Assert.NotNull(result);
+            Assert.Equal(result.Count, orders.Count);
+            Assert.True(result.TrueForAll(x => x.UserId == userId));
+            Assert.Empty(result.Select(x => x.UserId).Except(orders.Select(x => x.UserId)));
+        });
+        
+        _mockOrderRepository.Verify(x => x.GetAllAndIncludeByUserIdAsync(userId), Times.Once);
+    }
+
+    [Fact]
     public void UpdateAsync_ShouldThrowException_IfObjectNotFound()
     {
         // Arrange
@@ -212,13 +241,13 @@ public class OrderServiceTest : TestSetup
         };
     }
     
-    private Order GenerateOrder(int? id = null)
+    private Order GenerateOrder(int? id = null, int? userId = null)
     {
         return new Order()
         {
             Id = id ?? _faker.Int(1),
             OrderCode = _faker.Int(1),
-            UserId = _faker.Int(1),
+            UserId = userId ?? _faker.Int(1),
             AddressId = _faker.Int(1),
             OrderProducts = Enumerable.Range(0, _faker.Int(10, 30))
                 .Select(_ => GenerateOrderProducts())

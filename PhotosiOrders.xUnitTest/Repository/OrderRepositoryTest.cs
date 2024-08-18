@@ -67,15 +67,39 @@ public class OrderRepositoryTest : TestSetup
         Assert.Equal(result.Id, order.Id);
         Assert.Equal(result.OrderProducts.Count, order.OrderProducts.Count);
     }
+
+    [Fact]
+    public async Task GetAllAndIncludeByUserIdAsync_ShouldReturnList_Always()
+    {
+        // Arrange
+        var repository = GetRepository();
+
+        var userId = _faker.Int(1);
+        var orders = Enumerable.Range(0, _faker.Int(10, 30))
+            .Select(_ => GenerateOrderAndSave(userId))
+            .ToList();
+        
+        // Act
+        var result = await repository.GetAllAndIncludeByUserIdAsync(userId);
+        
+        // Assert
+        Assert.Multiple(() =>
+        {
+            Assert.NotNull(result);
+            Assert.Equal(result.Count, orders.Count);
+            Assert.True(result.TrueForAll(x => x.UserId == userId));
+            Assert.Empty(result.Select(x => x.UserId).Except(orders.Select(x => x.UserId)));
+        });
+    }
     
     private IOrderRepository GetRepository() => new OrderRepository(_context);
     
-    private Order GenerateOrderAndSave()
+    private Order GenerateOrderAndSave(int? userId = null)
     {
         var order = new Order()
         {
             OrderCode = _faker.Int(1),
-            UserId = _faker.Int(1),
+            UserId = userId ?? _faker.Int(1),
             AddressId = _faker.Int(1),
             OrderProducts = Enumerable.Range(0, _faker.Int(10, 30))
                 .Select(_ => GenerateOrderProducts())
