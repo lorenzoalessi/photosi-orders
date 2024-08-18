@@ -31,7 +31,7 @@ public class OrderController : ControllerBase
         return Ok(await _orderService.GetByIdAsync(id));
     }
 
-    [HttpGet("user/{id}")]
+    [HttpGet("user/{userId}")]
     public async Task<IActionResult> GetAllForUser(int userId)
     {
         if (userId < 1)
