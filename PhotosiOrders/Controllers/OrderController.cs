@@ -30,6 +30,15 @@ public class OrderController : ControllerBase
 
         return Ok(await _orderService.GetByIdAsync(id));
     }
+
+    [HttpGet("user/{id}")]
+    public async Task<IActionResult> GetAllForUser(int userId)
+    {
+        if (userId < 1)
+            return BadRequest("ID fornito non valido");
+
+        return Ok(await _orderService.GetAllForUserAsync(userId));
+    }
     
     [HttpPut("{id}")]
     public async Task<IActionResult> Update(int id, [FromBody] OrderDto orderDto)

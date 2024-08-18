@@ -22,4 +22,12 @@ public class OrderRepository : GenericRepository<Model.Order>, IOrderRepository
             .Include(x => x.OrderProducts)
             .SingleOrDefaultAsync(x => x.Id == id);
     }
+
+    public async Task<List<Model.Order>> GetAllAndIncludeByUserIdAsync(int userId)
+    {
+        return await Context.Orders
+            .Include(x => x.OrderProducts)
+            .Where(x => x.UserId == userId)
+            .ToListAsync();
+    }
 }

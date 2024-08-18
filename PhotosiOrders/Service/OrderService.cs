@@ -29,6 +29,12 @@ public class OrderService : IOrderService
         return _mapper.Map<OrderDto>(order);
     }
 
+    public async Task<List<OrderDto>> GetAllForUserAsync(int userId)
+    {
+        var users = await _orderRepository.GetAllAndIncludeByUserIdAsync(userId);
+        return _mapper.Map<List<OrderDto>>(users);
+    }
+
     public async Task<OrderDto> UpdateAsync(int id, OrderDto orderDto)
     {
         var order = await _orderRepository.GetByIdAndIncludeAsync(id);

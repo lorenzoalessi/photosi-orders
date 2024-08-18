@@ -8,6 +8,8 @@ public interface IOrderService
     
     Task<OrderDto> GetByIdAsync(int id);
 
+    Task<List<OrderDto>> GetAllForUserAsync(int userId);
+
     Task<OrderDto> UpdateAsync(int id, OrderDto orderDto);
     
     Task<OrderDto> AddAsync(OrderDto orderDto);
